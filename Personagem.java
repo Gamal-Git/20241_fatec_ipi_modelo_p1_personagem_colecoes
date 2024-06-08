@@ -3,9 +3,11 @@ import java.util.Random;
 public class Personagem{
   //variáveis de instância(objeto)
   String nome;
-  int energia;
+  private int energia;
   private int fome;
   private int sono;
+  private int cod_atividade;
+  private String descricao;
 
   //esse é o construtor padrão
   //criado automaticamente pelo compilador, ainda que não seja escrito explicitamente
@@ -14,6 +16,8 @@ public class Personagem{
     energia = 10;
     fome = 0;
     sono = 0;
+    cod_atividade = 0;
+    descricao = "batata";
   }
 
   //construtor personalizado
@@ -73,5 +77,13 @@ public class Personagem{
       "%s: (e:%d, f:%d, s:%d)",
       nome, energia, fome, sono
     );
+  }
+
+  public int getCod_atividade(){
+    return cod_atividade;
+  }
+
+  public String getDescricao(){
+    return descricao;
   }
 }
