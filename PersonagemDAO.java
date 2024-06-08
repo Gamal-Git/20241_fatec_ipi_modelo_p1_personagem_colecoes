@@ -1,6 +1,8 @@
-
+import javax.swing.JOptionPane;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
 
 public class PersonagemDAO { //data access object
   
@@ -19,6 +21,31 @@ public class PersonagemDAO { //data access object
     //5. Executar o comando
     ps.execute();
     //6. Fechar a conexão
+    ps.close();
+    conexao.close();
+    Thread.sleep(1000);
+  }
+  
+  public void consultarLog() throws Exception {
+    Connection conexao = ConnectionFactory.getConnection();
+    
+    String sql = "SELECT descricao, data_de_ocorrencia FROM tb_atividade ORDER BY data_de_ocorrencia DESC";
+    PreparedStatement ps = conexao.prepareStatement(sql);
+    
+    ResultSet rs = ps.executeQuery();
+
+    StringBuilder mensagem = new StringBuilder();
+    var dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    while (rs.next()) {
+        String descricao = rs.getString("descricao");
+        java.util.Date dataDeOcorrencia = rs.getTimestamp("data_de_ocorrencia");
+        String dataFormatada = dateFormat.format(dataDeOcorrencia);
+        mensagem.append("Descrição: ").append(descricao).append(", Data de Ocorrência: ").append(dataFormatada).append("\n");
+    }
+    
+    JOptionPane.showMessageDialog(null, mensagem.toString(), "Log de Atividades", JOptionPane.INFORMATION_MESSAGE);
+    
+    rs.close();
     ps.close();
     conexao.close();
   }
