@@ -17,7 +17,7 @@ public class Personagem{
     fome = 0;
     sono = 0;
     cod_atividade = 0;
-    descricao = "batata";
+    descricao = null;
   }
 
   //construtor personalizado
@@ -33,11 +33,9 @@ public class Personagem{
 
   void cacar(){
     if(energia >= 2){
-      System.out.printf("%s esta cacando...\n", nome);
       energia -= 2; // energia = energia - 2;
     }
     else{
-      System.out.printf("%s sem energia para cacar...\n", nome);
     }
     fome = Math.min(fome + 1, 10);
     //resolver com o ternário
@@ -52,10 +50,8 @@ public class Personagem{
       //so vai avisar que esta sem fome
       switch(fome){
         case 0:
-          System.out.printf("%s sem fome....\n", nome);
           break;
         default:
-          System.out.printf("%s comendo...\n", nome);
           --fome;
           energia = (energia == 10 ? energia : energia + 1);
       }
@@ -63,12 +59,8 @@ public class Personagem{
 
   void dormir(){
     if(sono >= 1){
-      System.out.printf("%s esta dormindo...\n", nome);
       sono -= 1;
       energia = Math.min(energia + 1, 10);
-    }
-    else{
-      System.out.printf("%s sem sono...\n", nome);
     }
   }
 
@@ -85,5 +77,38 @@ public class Personagem{
 
   public String getDescricao(){
     return descricao;
+  }
+
+  public void jogar(Personagem p){
+    var gerador = new Random();
+    if(vivo(this)){
+    int oQueFazer = gerador.nextInt(3);
+    switch(oQueFazer){
+      default:
+        this.cacar();
+        this.cod_atividade = 1;
+        this.descricao = "caçou";
+        break;
+      case 1:
+        this.comer();
+        this.cod_atividade = 2;
+        this.descricao = "comeu";
+        break;
+      case 2:
+        this.dormir();
+        this.cod_atividade = 3;
+        this.descricao = "dormiu";
+        break;
+      }
+    }
+  }
+
+  boolean vivo(Personagem p){
+    if(p.energia > 0){
+      return true;
+    }
+    else{
+      return false;
+    }
   }
 }
