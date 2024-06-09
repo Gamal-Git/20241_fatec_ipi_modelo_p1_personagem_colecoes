@@ -23,7 +23,7 @@ public class PersonagemDAO { //data access object
     //6. Fechar a conexão
     ps.close();
     conexao.close();
-    Thread.sleep(1000);
+    Thread.sleep(500);
   }
   
   public void consultarLog() throws Exception {
@@ -48,5 +48,37 @@ public class PersonagemDAO { //data access object
     rs.close();
     ps.close();
     conexao.close();
+  }
+
+  public boolean loginUsuario(Usuario user)throws Exception{    
+
+    var sql = "SELECT * FROM tb_usuario WHERE login = ? AND senha = ?";
+    Connection conexao = ConnectionFactory.getConnection();
+    PreparedStatement ps = conexao.prepareStatement(sql);
+    ps.setString(1, user.getLogin());
+    ps.setString(2, user.getSenha());
+
+    ResultSet rs = ps.executeQuery();
+
+    if(rs.next()){
+      return true;
+    }
+
+  return false;
+  }
+
+  public void cadastrarUsuario(Usuario user) throws Exception{
+    var sql = "INSERT INTO tb_usuario(login, senha) VALUES (?, ?)";
+    Connection conexao = ConnectionFactory.getConnection();
+    PreparedStatement ps = conexao.prepareStatement(sql);
+
+    ps.setString(1, user.getLogin());
+    ps.setString(2, user.getSenha());
+
+    ps.execute();
+
+    ps.close();
+    conexao.close();
+    Thread.sleep(500);
   }
 }
