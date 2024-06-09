@@ -6,24 +6,38 @@ import java.text.SimpleDateFormat;
 
 public class PersonagemDAO { //data access object
   
-  public void log(Personagem p) throws Exception{
-    //cláusula catch or declare
-    //1. Especificar o comando SQL
-    var sql = "INSERT INTO tb_atividade(cod_atividade, descricao) VALUES (?, ?)";
-    //2. Estabelecer uma conexão com o banco
-    Connection conexao = ConnectionFactory.getConnection();
-    //3. Preparar o comando
-    PreparedStatement ps = conexao.prepareStatement(sql);
-    //4. Substituir os eventuais placeholders
-    
-    ps.setInt(1, p.getCod_atividade());
-    ps.setString(2, p.getDescricao());
-    //5. Executar o comando
-    ps.execute();
-    //6. Fechar a conexão
-    ps.close();
+  public void log(Personagem p, Usuario user) throws Exception{
+    Connection conexao;
+    PreparedStatement ps;
+    PreparedStatement ps1;
+    ResultSet rs;
+
+    conexao = ConnectionFactory.getConnection();
+
+    String sql1 = "SELECT cod_usuario FROM tb_usuario WHERE login = ? AND senha = ?";
+    ps1 = conexao.prepareStatement(sql1);
+    ps1.setString(1, user.getLogin());
+    ps1.setString(2, user.getSenha());
+    rs = ps1.executeQuery();
+
+    if (rs.next()) {
+      int codUsuario = rs.getInt("cod_usuario");
+      String sql = "INSERT INTO tb_atividade(cod_atividade, descricao, cod_usuario) VALUES (?, ?, ?)";
+                     
+      ps = conexao.prepareStatement(sql);
+
+      ps.setInt(1, p.getCod_atividade());
+      ps.setString(2, p.getDescricao());
+      ps.setInt(3, codUsuario);
+
+      ps.execute();
+      ps.close();
+    }
+
+    rs.close();
+    ps1.close();
     conexao.close();
-    Thread.sleep(500);
+    Thread.sleep(1000);
   }
   
   public void consultarLog() throws Exception {
@@ -50,18 +64,21 @@ public class PersonagemDAO { //data access object
     conexao.close();
   }
 
-  public boolean loginUsuario(Usuario user)throws Exception{    
-
-    var sql = "SELECT * FROM tb_usuario WHERE login = ? AND senha = ?";
-    Connection conexao = ConnectionFactory.getConnection();
-    PreparedStatement ps = conexao.prepareStatement(sql);
-    ps.setString(1, user.getLogin());
-    ps.setString(2, user.getSenha());
-
-    ResultSet rs = ps.executeQuery();
-
-    if(rs.next()){
-      return true;
+  public boolean loginUsuario(Usuario user){    
+    try{
+      var sql = "SELECT * FROM tb_usuario WHERE login = ? AND senha = ?";
+      Connection conexao = ConnectionFactory.getConnection();
+      PreparedStatement ps = conexao.prepareStatement(sql);
+      ps.setString(1, user.getLogin());
+      ps.setString(2, user.getSenha());
+  
+      ResultSet rs = ps.executeQuery();
+  
+      if(rs.next()){
+        return true;
+      }
+    }catch(Exception e){
+      
     }
 
   return false;
