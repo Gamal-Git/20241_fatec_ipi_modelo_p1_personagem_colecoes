@@ -55,7 +55,7 @@ public class PersonagemDAO { //data access object
         String descricao = rs.getString("descricao");
         java.util.Date dataDeOcorrencia = rs.getTimestamp("data_de_ocorrencia");
         String dataFormatada = dateFormat.format(dataDeOcorrencia);
-        mensagem.append("Descrição: ").append(descricao).append(", Data de Ocorrência: ").append(dataFormatada).append("\n");
+        mensagem.append("Descrição: ").append(descricao).append(", Data de Ocorrência: ").append(dataFormatada).append("\n\n");
         i++;
     }
     
@@ -118,6 +118,33 @@ public class PersonagemDAO { //data access object
     ps1.close();
     conexao.close();
     Thread.sleep(10);
+  }
+
+  public void consultarRanking() throws Exception{
+    Connection conexao = ConnectionFactory.getConnection();
+    
+    String sql = "SELECT * FROM tb_ranking ORDER BY pontuacao DESC, data_de_ocorrencia ASC";
+    PreparedStatement ps = conexao.prepareStatement(sql);
+    
+    ResultSet rs = ps.executeQuery();
+
+    StringBuilder mensagem = new StringBuilder();
+    var dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    int i = 0;
+    while (rs.next() && i < 20) {
+        String nome = rs.getString("login");
+        int pontuacao = rs.getInt("pontuacao");
+        java.util.Date dataDeOcorrencia = rs.getTimestamp("data_de_ocorrencia");
+        String dataFormatada = dateFormat.format(dataDeOcorrencia);
+        mensagem.append("Jogador: ").append(nome).append(", Pontuação: ").append(pontuacao).append(", Data de Ocorrência: ").append(dataFormatada).append("\n\n");
+        i++;
+    }
+    
+    JOptionPane.showMessageDialog(null, mensagem.toString(), "Tabela de ranking", JOptionPane.INFORMATION_MESSAGE);
+    
+    rs.close();
+    ps.close();
+    conexao.close();
   }
 
   public void cadastrarUsuario(Usuario user) throws Exception{
