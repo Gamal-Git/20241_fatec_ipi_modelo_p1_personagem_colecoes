@@ -2,7 +2,6 @@ import java.util.Random;
 
 public class Personagem{
   //variáveis de instância(objeto)
-  String nome;
   private int cod_atividade;
   private String descricao;
 
@@ -20,13 +19,14 @@ public class Personagem{
     return descricao;
   }
 
-  public void jogar(){
+  public void jogar(Usuario user){
     var gerador = new Random();
     int oQueFazer = gerador.nextInt(3);
     switch(oQueFazer){
       default:
         cod_atividade = 1;
         descricao = "caçou";
+        user.pontuacao += 2;
         break;
       case 1:
         cod_atividade = 2;
@@ -35,6 +35,7 @@ public class Personagem{
       case 2:
         cod_atividade = 3;
         descricao = "dormiu";
+        user.pontuacao--;
       break;
     }
   }
