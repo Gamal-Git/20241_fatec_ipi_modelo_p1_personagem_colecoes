@@ -50,11 +50,13 @@ public class PersonagemDAO { //data access object
 
     StringBuilder mensagem = new StringBuilder();
     var dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-    while (rs.next()) {
+    int i = 0;
+    while (rs.next() && i < 20) {
         String descricao = rs.getString("descricao");
         java.util.Date dataDeOcorrencia = rs.getTimestamp("data_de_ocorrencia");
         String dataFormatada = dateFormat.format(dataDeOcorrencia);
         mensagem.append("Descrição: ").append(descricao).append(", Data de Ocorrência: ").append(dataFormatada).append("\n");
+        i++;
     }
     
     JOptionPane.showMessageDialog(null, mensagem.toString(), "Log de Atividades", JOptionPane.INFORMATION_MESSAGE);
@@ -77,11 +79,45 @@ public class PersonagemDAO { //data access object
       if(rs.next()){
         return true;
       }
-    }catch(Exception e){
-      
+    }
+    catch(Exception e){ 
+    }
+  return false;
+  }
+
+  public void ranking(Usuario user, Personagem p) throws Exception{
+    Connection conexao;
+    PreparedStatement ps;
+    PreparedStatement ps1;
+    ResultSet rs;
+
+    conexao = ConnectionFactory.getConnection();
+
+    String sql1 = "SELECT * FROM tb_usuario WHERE login = ? AND senha = ?";
+    ps1 = conexao.prepareStatement(sql1);
+    ps1.setString(1, user.getLogin());
+    ps1.setString(2, user.getSenha());
+    rs = ps1.executeQuery();
+
+    if (rs.next()) {
+      int codUsuario = rs.getInt("cod_usuario");
+      String nome = rs.getString("login");
+      String sql = "INSERT INTO tb_ranking(pontuacao, login, cod_usuario) VALUES (?, ?, ?)";
+                     
+      ps = conexao.prepareStatement(sql);
+
+      ps.setInt(1, user.getPontuacao());
+      ps.setString(2, nome);
+      ps.setInt(3, codUsuario);
+
+      ps.execute();
+      ps.close();
     }
 
-  return false;
+    rs.close();
+    ps1.close();
+    conexao.close();
+    Thread.sleep(10);
   }
 
   public void cadastrarUsuario(Usuario user) throws Exception{
