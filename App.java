@@ -12,7 +12,7 @@ public class App {
       }while(!dao.loginUsuario(user));
       do{
         try{
-          var menu = "1-Jogar\n2-Consultar Log\n0-Sair";
+          var menu = "1-Jogar\n2-Consultar Log\n3-Ranking\n0-Sair";
           op = Integer.parseInt(
             JOptionPane.showInputDialog(menu)
         );
@@ -28,6 +28,9 @@ public class App {
           case 2:{
             dao.consultarLog();
           break;
+          }
+          case 3:{
+            dao.consultarRanking();
           }
           case 0:{
             JOptionPane.showMessageDialog(null, "Saindo...");
