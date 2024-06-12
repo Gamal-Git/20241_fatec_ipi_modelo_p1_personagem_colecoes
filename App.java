@@ -31,6 +31,7 @@ public class App {
           }
           case 3:{
             dao.consultarRanking();
+            break;
           }
           case 0:{
             JOptionPane.showMessageDialog(null, "Saindo...");
